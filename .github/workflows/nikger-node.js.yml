@@ -6,7 +6,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test :
+  build-and-test:
 
     runs-on: ubuntu-latest
 
@@ -28,8 +28,10 @@ jobs:
     - run: npx playwright install
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm run test:unit
-    
+    - run: npm run test:unit   
+    - run: npm start & while ! nc -z localhost 8080; do sleep 3; done
+    - run: npm run test:ui
+
   deploy:
   
     runs-on: ubuntu-latest
@@ -40,4 +42,5 @@ jobs:
       uses: johnbeynon/render-deploy-action@v0.0.8
       with:
         serviceId: ${{ secrets.SERVICE_ID }}
-        apiKey: ${{ secrets.RENDER_TOKEN }}    
+        apiKey: ${{ secrets.RENDER_TOKEN }}
+
