@@ -1,4 +1,3 @@
-
 name: NikGer-exam
 on:
   push:
@@ -7,14 +6,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test :
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x]
-       
+        
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,8 +24,20 @@ jobs:
     - name: Display SoftUni Username
       run: echo My SoftUni Username is NikGer
     - run: npm install 
+    - run: npm install 
     - run: npx playwright install
     - run: npm ci
     - run: npm run build --if-present
     - run: npm run test:unit
     
+  deploy:
+  
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+    - name: Deploy to Render
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        serviceId: ${{ secrets.SERVICE_ID }}
+        apiKey: ${{ secrets.RENDER_TOKEN }}    
